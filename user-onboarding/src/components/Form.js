@@ -5,21 +5,25 @@ import axios from "axios";
 import UserList from "./UserList"
 
 
-function UserForm({values, props}) {
+function UserForm({values, errors, touched, status}) {
 
     const [users, setUsers] = useState([]);
 
     useEffect(()=> {
-
+        status && setUsers(users => [...users, status])
     },[status])
     
-    console.log(values)
+    // console.log(values)
 
     return (
-        <div  className="form-container">
-            <h1>Add New Users</h1>
+        <div  className="main-container">
+            
             <Form>
+                <h1>Add New Users</h1>
                 <Field type="name" name="name" placeholder="Enter Name" />
+                {touched.name && errors.name && (
+                    <p>{errors.name}</p>
+                )}
 
                 <Field type="email" name="email" placeholder="Enter Email"/>
                 <Field type="password" name="password" placeholder="Enter Password"/>
@@ -46,7 +50,13 @@ const FormikUserForm = withFormik({
             tos: props.tos || false
         };
     },
-    handleSubmit(values, {setStatus, resetForm}) {
+    validationSchema: Yup.object().shape({
+        name: Yup.string().required(),
+        email: Yup.string().required(),
+        password: Yup.string().required(),
+
+    }),
+    handleSubmit(values, {setStatus, resetForm, status}) {
         axios
             .post("https://reqres.in/api/users/", values)
             .then(res => {
@@ -54,6 +64,7 @@ const FormikUserForm = withFormik({
                 setStatus(res.data);
                 resetForm();
             })
+            .catch(err => console.log(err.response))
     }
 })(UserForm);
 
