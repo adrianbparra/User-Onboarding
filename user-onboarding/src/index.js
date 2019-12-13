@@ -1,8 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import * as serviceWorker from './serviceWorker';
+import * as formik from "formik";
+import axios from "axios"
+import UserForm from "./components/Form"
+
+function App() {
+    
+    
+    return (
+      <div className="App">
+          <UserForm />
+      </div>
+    );
+  }
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
