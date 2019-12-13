@@ -36,3 +36,25 @@ code {
   border: 2px dashed rgb(216, 73, 73);
 }
 
+.main-container form input{
+  margin-top: 20px;
+}
+
+.main-container form .errors {
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+
+.main-container form .tos {
+  text-align: center;
+}
+
+.main-container .user_list {
+  display: flex;
+}
+
+.main-container .user_list .user{
+  width: 230px;
+  border: 1px solid black;
+}
