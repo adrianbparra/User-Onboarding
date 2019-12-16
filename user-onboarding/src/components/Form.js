@@ -7,13 +7,33 @@ import UserList from "./UserList"
 
 function UserForm({values, errors, touched, status}) {
 
-    const [users, setUsers] = useState([]);
+    const [users, setUsers] = useState([{id: Date.now(),name:"waffle", email: "waffle@syrup.com", password:"Ilovewaffles"}]);
+    
+    const [emails, setEmails] = useState(["waffle@syrup.com"]);
+
+    console.log(values);
 
     useEffect(()=> {
-        status && setUsers(users => [...users, status])
+        status && setUsers(users => [...users, status]) && setEmails(email => [...email, status.email])
     },[status])
     
     // console.log(values)
+
+    // const validateEmail = (value, props) => {
+    //     let error;
+
+    //     console.log(value)        
+    //     if(users.includes(user=> user.email === value)){
+    //         error = "User is taken"
+    //     }
+
+    //     return error
+    //     // users.map(user => user.email)
+
+    //     // if(!values.email === user.email){
+    //     /////////////////////////////////////////////////////////////////////////////////////
+    //     // }
+    // }
 
     return (
         <div  className="main-container">
@@ -39,7 +59,7 @@ function UserForm({values, errors, touched, status}) {
                     Check to agree to the Terms of Services 
                     
                 </label>
-                {errors.tos && <p className="errors tos">{errors.tos}</p>}
+                {touched.tos && <p className="errors tos">{errors.tos}</p>}
                 <button type="submit">Submit!</button>
 
             </Form>
@@ -61,9 +81,9 @@ const FormikUserForm = withFormik({
     },
     validationSchema: Yup.object().shape({
         name: Yup.string().required(),
-        email: Yup.string().required(),
-        password: Yup.string().required(),
-        tos: Yup.bool().oneOf([true],"You must accept the tersm of services").required()
+        email: Yup.string().notOneOf([],"That email is taken, Please use another one or reset password.").email("Please use an email").required(),
+        password: Yup.string().required("Please Enter a Password"),
+        tos: Yup.bool().oneOf([true], "You must agree to the Terms of Services").required()
     }),
     handleSubmit(values, {setStatus, resetForm, status} ) {
         axios
