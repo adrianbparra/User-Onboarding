@@ -5,16 +5,16 @@ import axios from "axios";
 import UserList from "./UserList"
 
 
-function UserForm({values, errors, touched, status}) {
+function UserForm({values, errors, touched, status, emails,setEmails}) {
 
     const [users, setUsers] = useState([{id: Date.now(),name:"waffle", email: "waffle@syrup.com", password:"Ilovewaffles"}]);
     
-    const [emails, setEmails] = useState(["waffle@syrup.com"]);
+    
 
-    console.log(values);
+    console.log(emails);
 
     useEffect(()=> {
-        status && setUsers(users => [...users, status]) && setEmails(email => [...email, status.email])
+        status && setUsers(users => [...users, status]) && setEmails(emails => [...emails, status.email])
     },[status])
     
     // console.log(values)
@@ -71,7 +71,7 @@ function UserForm({values, errors, touched, status}) {
 }
 
 const FormikUserForm = withFormik({
-    mapPropsToValues({name,email,password,tos}){
+    mapPropsToValues({name, email, password,tos}){
         return {
             name: name || "",
             email: email || "",
@@ -79,18 +79,24 @@ const FormikUserForm = withFormik({
             tos: tos || false
         };
     },
-    validationSchema: Yup.object().shape({
-        name: Yup.string().required(),
-        email: Yup.string().notOneOf([],"That email is taken, Please use another one or reset password.").email("Please use an email").required(),
-        password: Yup.string().required("Please Enter a Password"),
-        tos: Yup.bool().oneOf([true], "You must agree to the Terms of Services").required()
-    }),
+    validationSchema: props => {
+        console.log(props);
+        return (
+            Yup.object().shape({
+                name: Yup.string().required(),      
+                email: Yup.string().notOneOf(props.emails,`That email is taken, Please use another one or reset password.`).email("Please use an email").required(),
+                password: Yup.string().required("Please Enter a Password"),
+                tos: Yup.bool().oneOf([true], "You must agree to the Terms of Services").required()
+                })
+        )
+    },
     handleSubmit(values, {setStatus, resetForm, status} ) {
         axios
             .post("https://reqres.in/api/users/", values)
             .then(res => {
                 console.log("success", res);
                 setStatus(res.data);
+                
                 resetForm();
             })
             .catch(err => console.log(err.response))

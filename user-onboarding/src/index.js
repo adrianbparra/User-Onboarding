@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
@@ -8,10 +8,11 @@ import UserForm from "./components/Form"
 
 function App() {
     
+  const [emails, setEmails] = useState(["waffle@syrup.com"]);
     
     return (
       <div className="App">
-          <UserForm />
+          <UserForm emails={emails} setEmails={setEmails}/>
       </div>
     );
   }
